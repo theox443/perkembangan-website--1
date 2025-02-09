@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# Membersihkan proyek dengan menghapus file-file yang tidak diperlukan
+
+# Direktori proyek (ganti dengan direktori proyek Anda)
+PROJECT_DIR="/path/to/your/project"
+
+# File-file yang akan dihapus
+FILES_TO_REMOVE=("*.o" "*.out" "*.log" "*.tmp")
+
+# Pesan awal
+echo "Membersihkan proyek di direktori: $PROJECT_DIR"
+
+# Loop melalui setiap jenis file yang akan dihapus
+for file_pattern in "${FILES_TO_REMOVE[@]}"; do
+    echo "Menghapus file dengan pola: $file_pattern"
+    find "$PROJECT_DIR" -type f -name "$file_pattern" -exec rm -f {} \;
+done
+
+# Pesan akhir
+echo "Proyek telah dibersihkan."
+chmod +x clean_project.sh
+./clean_project.sh
