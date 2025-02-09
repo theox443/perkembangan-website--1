@@ -1,0 +1,124 @@
+1.Persiapan Lingkungan
+   - **Python3**: Pastikan Python3 sudah terinstall di sistem Anda.
+   - **Bash**: Bash biasanya sudah terinstall di sistem Unix/Linux.
+   - **SSH**: Pastikan SSH server sudah terinstall dan berjalan di server Anda.
+   - **PHP**: Install PHP untuk menangani sisi server.
+   - **Golang**: Install Go untuk menulis kode backend.
+   - **Clang**: Install Clang untuk kompilasi kode C/C++.
+
+2.Struktur Proyek
+   Buat struktur direktori untuk proyek Anda:
+   ```bash
+   mkdir mywebsite
+   cd mywebsite
+   mkdir -p {html,cgi-bin,go,php,logs}
+   html
+   <!DOCTYPE html>
+   <html lang="en">
+   <head>
+       <meta charset="UTF-8">
+       <meta name="viewport" content="width=device-width, initial-scale=1.0">
+       <title>My Website</title>
+   </head>
+   <body>
+       <h1>Welcome to My Website</h1>
+       <p>This is a simple website.</p>
+       <form action="/cgi-bin/process.php" method="post">
+           <input type="text" name="name" placeholder="Enter your name">
+           <input type="submit" value="Submit">
+       </form>
+   </body>
+   </html>
+   <?php
+   if ($_SERVER["REQUEST_METHOD"] == "POST") {
+       $name = htmlspecialchars($_POST['name']);
+       echo "<h1>Hello, $name!</h1>";
+   }
+   ?>
+   go
+   package main
+
+   import (
+       "fmt"
+       "net/http"
+   )
+
+   func handler(w http.ResponseWriter, r *http.Request) {
+       fmt.Fprintf(w, "Hello from Go!")
+   }
+
+   func main() {
+       http.HandleFunc("/", handler)
+       http.ListenAndServe(":8080", nil)
+   }
+   bash
+   go run go/main.go
+   ```bash
+   #!/bin/bash
+
+   LOG_FILE="logs/virus_tracker.log"
+
+   echo "Starting virus tracking..." >> $LOG_FILE
+
+   while true; do
+       # Contoh: Cek proses yang mencurigakan
+       suspicious_processes=$(ps aux | grep -i "virus\|malware\|trojan")
+
+       if [ -n "$suspicious_processes" ]; then
+           echo "$(date): Suspicious processes detected:" >> $LOG_FILE
+           echo "$suspicious_processes" >> $LOG_FILE
+       fi
+
+       sleep 60
+   done
+   ```bash
+   bash logs/virus_tracker.sh &
+   ```bash
+   sudo systemctl start ssh
+   ```
+
+   Anda dapat mengakses server Anda dari remote menggunakan:
+   ```bash
+   ssh user@your_server_ip
+   ```c
+   #include <stdio.h>
+
+   int main() {
+       printf("Content-type: text/html\n\n");
+       printf("<h1>Hello from C!</h1>\n");
+       return 0;
+   }
+   ```bash
+   clang cgi-bin/hello.c -o cgi-bin/hello.cgi
+   ```apache
+   <VirtualHost *:80>
+       DocumentRoot /path/to/mywebsite/html
+       ScriptAlias /cgi-bin/ /path/to/mywebsite/cgi-bin/
+       <Directory "/path/to/mywebsite/cgi-bin">
+           AllowOverride None
+           Options +ExecCGI -MultiViews +SymLinksIfOwnerMatch
+           Require all granted
+       </Directory>
+   </VirtualHost>
+   ```
+Rekam Jalur Virus**
+   Script Bash `virus_tracker.sh
+sudo systemctl start ssh
+ssh user@your_server_ip
+#include <stdio.h>
+
+int main() {
+    printf("Content-type: text/html\n\n");
+    printf("<h1>Hello from C!</h1>\n");
+    return 0;
+}
+clang cgi-bin/hello.c -o cgi-bin/hello.cgi
+<VirtualHost *:80>
+    DocumentRoot /path/to/mywebsite/html
+    ScriptAlias /cgi-bin/ /path/to/mywebsite/cgi-bin/
+    <Directory "/path/to/mywebsite/cgi-bin">
+        AllowOverride None
+        Options +ExecCGI -MultiViews +SymLinksIfOwnerMatch
+        Require all granted
+    </Directory>
+</VirtualHost>
