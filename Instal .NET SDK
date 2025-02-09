@@ -1,0 +1,22 @@
+dotnet new console -n MyDotNetApp
+cd MyDotNetApp
+dotnet run
+using System;
+
+namespace MyDotNetApp
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.WriteLine("Hello, World!");
+        }
+    }
+}
+dotnet build
+code .
+dotnet add package <myDotnetapp>
+dotnet add package Newtonsoft.Json
+git init
+git add .
+git commit -m "Initial commit"
