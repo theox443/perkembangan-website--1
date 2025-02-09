@@ -1,0 +1,69 @@
+cmake_minimum_required(VERSION 3.10)
+project(MyProject)
+
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g")
+
+add_executable(MyProject main.cpp)
+#include <iostream>
+
+int main() {
+    std::cout << "Debug Mode!" << std::endl;
+    return 0;
+}
+mkdir build
+cd build
+cmake -DCMAKE_BUILD_TYPE=Debug ..
+make
+def main():
+    print("Debug Mode!")
+    x = 10
+    y = 20
+    z = x + y
+    print(f"z = {z}")
+
+if __name__ == "__main__":
+    main()
+    python -m pdb script.py
+    <project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.example</groupId>
+    <artifactId>my-app</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <properties>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+    </properties>
+</project>
+mvn clean install -Dmaven.surefire.debug
+using System;
+
+namespace MyProject
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.WriteLine("Debug Mode!");
+        }
+    }
+}
+function main() {
+    console.log("Debug Mode!");
+    let x = 10;
+    let y = 20;
+    let z = x + y;
+    console.log(`z = ${z}`);
+}
+
+main();
+node inspect script.js
+package main
+
+import "fmt"
+
+func main() {
+    fmt.Println("Hello, Debug Mode!")
+}
+dlv debug main.go
