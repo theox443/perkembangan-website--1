@@ -1,0 +1,28 @@
+{
+  "name": "Python Development Environment",
+  "dockerFile": "Dockerfile",
+  "context": "..",
+  "appPort": [5000],
+  "settings": {
+    "terminal.integrated.shell.linux": "/bin/bash",
+    "python.pythonPath": "/usr/local/bin/python3",
+    "python.linting.enabled": true,
+    "python.linting.pylintEnabled": true,
+    "python.linting.flake8Enabled": true,
+    "python.formatting.autopep8Path": "/usr/local/bin/autopep8",
+    "python.formatting.blackPath": "/usr/local/bin/black",
+    "python.formatting.yapfPath": "/usr/local/bin/yapf",
+    "python.linting.banditPath": "/usr/local/bin/bandit",
+    "python.linting.mypyPath": "/usr/local/bin/mypy"
+  },
+  "extensions": [
+    "ms-python.python",
+    "ms-python.vscode-pylance",
+    "visualstudioexptteam.vscodeintellicode",
+    "ms-azuretools.vscode-docker"
+  ],
+  "postCreateCommand": "pip install -r requirements.txt",
+  "remoteUser": "vscode"
+}
+
+
