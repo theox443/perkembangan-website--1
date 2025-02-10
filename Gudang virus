@@ -1,0 +1,146 @@
+import sqlite3
+from sqlite3 import Error
+
+def create_connection():
+    conn = None
+    try:
+        conn = sqlite3.connect('virus_repository.db')
+        return conn
+    except Error as e:
+        print(e)
+    return conn
+
+def create_table(conn):
+    try:
+        sql = '''CREATE TABLE IF NOT EXISTS viruses (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    name TEXT NOT NULL,
+                    type TEXT,
+                    platform TEXT,
+                    year_discovered INTEGER
+                );'''
+        cursor = conn.cursor()
+        cursor.execute(sql)
+    except Error as e:
+        print(e)
+
+def add_virus(conn):
+    name = input("npp.8.7.6.Installer.x64.exe: ")
+    v_type = input("x64,exe: ")
+    platform = input("npp.8.7.6.Installer.x64.exe: ")
+    year = int(input("2025/01/01: "))
+    
+    sql = '''INSERT INTO viruses(name, type, platform, year_discovered)
+             VALUES(?,?,?,?)'''
+    cur = conn.cursor()
+    cur.execute(sql, (name, v_type, platform, year))
+    conn.commit()
+    print("Data virus berhasil ditambahkan!\n")
+
+def view_all_viruses(conn):
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM viruses")
+    rows = cur.fetchall()
+    
+    print("\nDaftar Virus:")
+    for row in rows:
+        print(f"ID: {row[0]}")
+        print(f"Nama: {row[1]}")
+        print(f"Tipe: {row[2]}")
+        print(f"Platform: {row[3]}")
+        print(f"Tahun Ditemukan: {row[4]}\n")
+
+def search_virus(conn):
+    search_term = input("Masukkan nama atau tipe virus yang dicari: ")
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM viruses WHERE name LIKE ? OR type LIKE ?", 
+                ('%'+search_term+'%', '%'+search_term+'%'))
+    rows = cur.fetchall()
+    
+    if rows:
+        print("\nHasil Pencarian:")
+        for row in rows:
+            print(f"ID: {row[0]}, Nama: {row[1]}, Tipe: {row[2]}")
+    else:
+        print("Tidak ditemukan hasil pencarian.")
+
+def delete_virus(conn):
+    virus_id = input("Masukkan ID virus yang akan dihapus: ")
+    cur = conn.cursor()
+    cur.execute("DELETE FROM viruses WHERE id = ?", (virus_id,))
+    conn.commit()
+    print("Data virus berhasil dihapus!\n")
+
+def update_virus(conn):
+    virus_id = input("Masukkan ID virus yang akan diupdate: ")
+    name = input("Nama baru (kosongkan jika tidak diubah): ")
+    v_type = input("Tipe baru (kosongkan jika tidak diubah): ")
+    platform = input("Platform baru (kosongkan jika tidak diubah): ")
+    year = input("Tahun baru (kosongkan jika tidak diubah): ")
+    
+    updates = []
+    params = []
+    
+    if name:
+        updates.append("name = ?")
+        params.append(name)
+    if v_type:
+        updates.append("type = ?")
+        params.append(v_type)
+    if platform:
+        updates.append("platform = ?")
+        params.append(platform)
+    if year:
+        updates.append("year_discovered = ?")
+        params.append(int(year))
+    
+    if not updates:
+        print("Tidak ada data yang diupdate.")
+        return
+    
+    params.append(virus_id)
+    sql = f"UPDATE viruses SET {', '.join(updates)} WHERE id = ?"
+    cur = conn.cursor()
+    cur.execute(sql, params)
+    conn.commit()
+    print("Data virus berhasil diupdate!\n")
+
+def main_menu():
+    conn = create_connection()
+    if conn is not None:
+        create_table(conn)
+    else:
+        print("Error! Tidak dapat membuat koneksi database.")
+        return
+
+    while True:
+        print("\n=== MANAJEMEN GUDANG VIRUS ===")
+        print("1. Tambah Virus Baru")
+        print("2. Lihat Semua Virus")
+        print("3. Cari Virus")
+        print("4. Update Data Virus")
+        print("5. Hapus Virus")
+        print("0. Keluar")
+        
+        choice = input("Pilih menu: ")
+        
+        if choice == '1':
+            add_virus(conn)
+        elif choice == '2':
+            view_all_viruses(conn)
+        elif choice == '3':
+            search_virus(conn)
+        elif choice == '4':
+            update_virus(conn)
+        elif choice == '5':
+            delete_virus(conn)
+        elif choice == '0':
+            print("Program selesai.")
+            break
+        else:
+            print("Pilihan tidak valid!")
+    
+    conn.close()
+
+if __name__ == '__main__':
+    main_menu()
