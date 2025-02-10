@@ -1,0 +1,183 @@
+# File: initialize.py
+import random
+import sys
+
+def initialize_population(pop_size, chromo_length):
+    return [''.join(random.choices(['0','1'], k=chromo_length)) for _ in range(pop_size)]
+
+if __name__ == "__main__":
+    if len(sys.argv) != 3:
+        print("Usage: python3 initialize.py <population_size> <chromosome_length>")
+        sys.exit(1)
+    
+    pop_size = int(sys.argv[1])
+    chromo_length = int(sys.argv[2])
+    
+    population = initialize_population(pop_size, chromo_length)
+    
+    with open('population.txt', 'w') as f:
+        f.write('\n'.join(population))
+// File: evaluate.go
+package main
+
+import (
+    "bufio"
+    "fmt"
+    "os"
+    "strings"
+)
+
+func main() {
+    file, err := os.Open("population.txt")
+    if err != nil {
+        panic(err)
+    }
+    defer file.Close()
+
+    fitnessFile, err := os.Create("fitness.txt")
+    if err != nil {
+        panic(err)
+    }
+    defer fitnessFile.Close()
+
+    scanner := bufio.NewScanner(file)
+    for scanner.Scan() {
+        chromo := scanner.Text()
+        count := strings.Count(chromo, "1")
+        fitness := float64(count) / float64(len(chromo))
+        fmt.Fprintf(fitnessFile, "%.4f\n", fitness)
+    }
+
+    if err := scanner.Err(); err != nil {
+        panic(err)
+    }
+}
+# File: select_parents.py
+import random
+import sys
+
+def tournament_selection(population, fitness, tournament_size):
+    selected = []
+    for _ in range(len(population)):
+        contestants = random.sample(list(zip(population, fitness)), tournament_size)
+        winner = max(contestants, key=lambda x: x[1])
+        selected.append(winner[0])
+    return selected
+
+if __name__ == "__main__":
+    with open('population.txt', 'r') as f:
+        population = [line.strip() for line in f]
+    
+    with open('fitness.txt', 'r') as f:
+        fitness = [float(line.strip()) for line in f]
+    
+    selected_parents = tournament_selection(population, fitness, 3)
+    
+    with open('selected_parents.txt', 'w') as f:
+        f.write('\n'.join(selected_parents))
+// File: crossover.c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
+
+void crossover(const char *parent1, const char *parent2, char *child1, char *child2) {
+    int length = strlen(parent1);
+    int point = rand() % length;
+    
+    strncpy(child1, parent1, point);
+    strcpy(child1 + point, parent2 + point);
+    
+    strncpy(child2, parent2, point);
+    strcpy(child2 + point, parent1 + point);
+}
+
+int main() {
+    srand(time(NULL));
+    FILE *file = fopen("selected_parents.txt", "r");
+    char parent1[256], parent2[256];
+    FILE *out = fopen("offspring.txt", "w");
+    
+    while (fgets(parent1, sizeof(parent1), file) && 
+           fgets(parent2, sizeof(parent2), file)) {
+        parent1[strcspn(parent1, "\n")] = 0;
+        parent2[strcspn(parent2, "\n")] = 0;
+        
+        char child1[256], child2[256];
+        crossover(parent1, parent2, child1, child2);
+        fprintf(out, "%s\n%s\n", child1, child2);
+    }
+    
+    fclose(file);
+    fclose(out);
+    return 0;
+}
+// File: mutate.c
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include <string.h>
+
+#define MUTATION_RATE 0.01
+
+void mutate(char *chromo) {
+    for (int i = 0; i < strlen(chromo); i++) {
+        if ((double)rand()/RAND_MAX < MUTATION_RATE) {
+            chromo[i] = chromo[i] == '0' ? '1' : '0';
+        }
+    }
+}
+
+int main() {
+    srand(time(NULL));
+    FILE *in = fopen("offspring.txt", "r");
+    FILE *out = fopen("population.txt", "w");
+    char chromo[256];
+    
+    while (fgets(chromo, sizeof(chromo), in)) {
+        chromo[strcspn(chromo, "\n")] = 0;
+        mutate(chromo);
+        fprintf(out, "%s\n", chromo);
+    }
+    
+    fclose(in);
+    fclose(out);
+    return 0;
+}
+#!/bin/bash
+# File: main.sh
+
+# Konfigurasi
+POP_SIZE=100
+CHROMO_LENGTH=20
+GENERATIONS=50
+
+# Kompilasi program C
+clang -o crossover crossover.c
+clang -o mutate mutate.c
+
+# Inisialisasi populasi awal
+python3 initialize.py $POP_SIZE $CHROMO_LENGTH
+
+# Loop evolusi
+for ((gen=1; gen<=GENERATIONS; gen++)); do
+    # Evaluasi fitness
+    go run evaluate.go
+    
+    # Seleksi orang tua
+    python3 select_parents.py
+    
+    # Crossover
+    ./crossover
+    
+    # Mutasi
+    ./mutate
+    
+    echo "Generasi $gen selesai"
+    echo "Individu terbaik: $(sort -r fitness.txt | head -n1)"
+done
+
+# Pembersihan
+rm crossover mutate 2> /dev/null
+chmod +x main.sh
+./main.sh
