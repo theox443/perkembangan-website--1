@@ -1,22 +1,94 @@
-dotnet new console -n MyDotNetApp
-cd MyDotNetApp
-dotnet run
-using System;
+dotnet new webapp -o MyWebApp
+cd MyWebApp
+MyWebApp/
+├── Pages/
+│   ├── Index.cshtml
+│   └── Privacy.cshtml
+├── wwwroot/
+│   └── css/
+├── appsettings.json
+├── Program.cs
+└── MyWebApp.csproj
+var builder = WebApplication.CreateBuilder(args);
 
-namespace MyDotNetApp
+// Add services to the container.
+builder.Services.AddRazorPages();
+
+var app = builder.Build();
+
+// Configure the HTTP request pipeline.
+if (!app.Environment.IsDevelopment())
 {
-    class Program
+    app.UseExceptionHandler("/Error");
+    app.UseHsts();
+}
+
+app.UseHttpsRedirection();
+app.UseStaticFiles();
+
+app.UseRouting();
+
+app.UseAuthorization();
+
+app.MapRazorPages();
+
+app.Run();
+@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div>
+@page
+@model AboutModel
+@{
+    ViewData["Title"] = "About Us";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<p>This is the about page of our website.</p>
+using Microsoft.AspNetCore.Mvc.RazorPages;
+
+namespace MyWebApp.Pages
+{
+    public class AboutModel : PageModel
     {
-        static void Main(string[] args)
+        public void OnGet()
         {
-            Console.WriteLine("Hello, World!");
         }
     }
 }
-dotnet build
-code .
-dotnet add package <myDotnetapp>
-dotnet add package Newtonsoft.Json
-git init
-git add .
-git commit -m "Initial commit"
+dotnet run
+dotnet add package Microsoft.EntityFrameworkCore.SqlServer
+dotnet add package Microsoft.AspNetCore.Identity.EntityFrameworkCore
+[ApiController]
+[Route("[controller]")]
+public class SampleApiController : ControllerBase
+{
+    [HttpGet]
+    public IActionResult Get()
+    {
+        return Ok(new { message = "Hello from API!" });
+    }
+}
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.*" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.*" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.*" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.*" />
+  </ItemGroup>
+
+</Project>
